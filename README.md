@@ -17,7 +17,7 @@ It includes:
 ## Local Setup guide
 ### clone the repo
 ```bash
-git clone
+git clone https://github.com/ayushi-dixit09/VoucherCodePlaywrightTask.git
 
 To get started :
 
