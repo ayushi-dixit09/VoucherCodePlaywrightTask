@@ -14,7 +14,7 @@ test('Search for restaurant offers in London via Categories flow', async ({ page
     await restaurantPage.goToRestaurants();
 
     // Step 4: Fill search details
-    await restaurantPage.searchRestaurants('London');
+    await restaurantPage.enterTown('London');
 
     // Step 5: Click on Find Vouchers
     await restaurantPage.clickFindVouchers();

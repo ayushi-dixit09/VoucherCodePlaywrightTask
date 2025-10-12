@@ -6,11 +6,11 @@ export class RestaurantPage {
 
     // Locators
     this.acceptCookiesBtn = page.locator('#onetrust-accept-btn-handler');
-    this.categoriesMenu = page.locator('#categories-dialog' );
-    this.restaurantsLink = page.getByRole('link', { name: 'Restaurants icon Restaurants' })
+    this.categoriesMenu = page.locator('#categories-dialog');
+    this.restaurantsLink = page.getByRole('link', { name: 'Restaurants icon Restaurants' });
     this.locationInput = page.getByRole('textbox', { name: 'Location' });
-    this.dateInput = page.getByLabel('Day');
-    this.peopleDropdown = page.getByLabel('People');
+    this.dateInput = page.locator('#day-select');
+    this.peopleDropdown = page.locator('#people-select');
     this.findVouchersBtn = page.getByRole('button', { name: 'Find restaurants vouchers' });
     this.offers = page.locator('.offer, article, section');
   }
@@ -19,30 +19,36 @@ export class RestaurantPage {
     await this.page.goto('https://www.vouchercodes.co.uk');
   }
 
+  // Handle cookies banner safely
   async acceptCookiesIfVisible() {
-    if (await this.acceptCookiesBtn.isVisible({timeout:5000})) {
-        await this.acceptCookiesBtn.scrollIntoViewIfNeeded();
-        await this.acceptCookiesBtn.click({force:true});
+    try {
+      await this.acceptCookiesBtn.waitFor({ state: 'visible', timeout: 5000 });
+      await this.acceptCookiesBtn.scrollIntoViewIfNeeded();
+      await this.acceptCookiesBtn.click({ force: true });
+    } catch {
+      // Cookie banner not found within 5s — ignore
     }
   }
 
   async goToRestaurants() {
-    await this.categoriesMenu.click({force:true});
-    await this.restaurantsLink.click({force:true});
+    await this.categoriesMenu.click({ force: true });
+    await this.restaurantsLink.click({ force: true });
   }
 
-  async searchRestaurants() {
+  async enterTown(town = 'London') {
     await this.locationInput.click();
-    await this.locationInput.fill('London');
+    await this.locationInput.fill(town);
+    await this.page.keyboard.press('ArrowDown');
+    await this.page.keyboard.press('Enter');
 
     // Select any day
     if (await this.dateInput.isVisible()) {
-      await this.dateInput.click();
-      await this.dateInput.first().selectOption('Any');
+      await this.dateInput.selectOption({ label: 'Any' });
     }
 
     // Select any number of people
-    await this.peopleDropdown.selectOption('Any');
+    await this.peopleDropdown.waitFor({ state: 'visible' });
+    await this.peopleDropdown.selectOption({ index: 1 });
   }
 
   async clickFindVouchers() {
