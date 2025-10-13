@@ -7,7 +7,7 @@ export class RestaurantPage {
     // Locators
     this.acceptCookiesBtn = page.locator('#onetrust-accept-btn-handler');
     this.categoriesMenu = page.locator('#categories-dialog');
-    this.restaurantsLink = page.getByRole('link', { name: 'Restaurants icon Restaurants' });
+    this.restaurantsLink = page.getByRole('link', { name: 'Restaurants' });
     this.locationInput = page.getByRole('textbox', { name: 'Location' });
     this.dateInput = page.locator('#day-select');
     this.peopleDropdown = page.locator('#people-select');
@@ -15,6 +15,7 @@ export class RestaurantPage {
     this.offers = page.locator('.offer, article, section');
   }
 
+  // Open the website
   async openSite() {
     await this.page.goto('https://www.vouchercodes.co.uk');
   }
@@ -26,16 +27,19 @@ export class RestaurantPage {
       await this.acceptCookiesBtn.scrollIntoViewIfNeeded();
       await this.acceptCookiesBtn.click({ force: true });
     } catch {
-      // Cookie banner not found within 5s — ignore
+      // Cookie banner not found within timeout — safe to ignore
     }
   }
 
+  // Navigate to Categories → Restaurants
   async goToRestaurants() {
     await this.categoriesMenu.click({ force: true });
     await this.restaurantsLink.click({ force: true });
   }
 
+  // Enter search details (town, day, people)
   async enterTown(town = 'London') {
+    await this.locationInput.waitFor({ state: 'visible', timeout: 10000 });
     await this.locationInput.click();
     await this.locationInput.fill(town);
     await this.page.keyboard.press('ArrowDown');
@@ -51,10 +55,12 @@ export class RestaurantPage {
     await this.peopleDropdown.selectOption({ index: 1 });
   }
 
+  // Click on "Find Vouchers"
   async clickFindVouchers() {
     await this.findVouchersBtn.click();
   }
 
+  // Verify that restaurant offers are visible
   async verifyOffersVisible() {
     await this.offers.first().waitFor({ timeout: 10000 });
     const count = await this.offers.count();

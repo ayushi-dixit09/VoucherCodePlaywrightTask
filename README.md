@@ -30,7 +30,7 @@ npx playwright show-report
 
 This will install dependencies, run the suite, and open a visual HTML report of your test run.
 
-Tested with Node.js v24.4.1
+Tested with Node.js v22.18.0
 
 ---
 
@@ -59,9 +59,11 @@ project-root/
 
 🧩 Command Reference
 Action	              Command
-Run all tests	      npx playwright test
+Run all tests         npx playwright test	
+Run single test       npx playwright test tests/restaurantOffers.spec.js     
 Show test report	  npx playwright show-report
-Run in headed mode	  npx playwright test --headed
+Run all tests in      npx playwright test --headed
+ headed mode	                  
 Run in UI mode	      npx playwright test --ui
 Open trace file       npx playwright show-trace
 ---
@@ -80,3 +82,6 @@ Author
 -Includes both automated and manual test documentation.
 
 -Negative case is intentionally failing for validation.
+-In some runs, a single test execution may fail due to the dynamic loading of the live site’s navigation elements.
+When all tests are run together, the flow works consistently.
+
